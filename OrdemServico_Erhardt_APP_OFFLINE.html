@@ -1,0 +1,239 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Erhardt OS">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+    <meta charset="UTF-8">
+    <title>Ordem de Serviço - Erhardt Professional</title>
+    <style>
+@media print {
+  #logo { display: block; page-break-before: always; }
+}
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 20px; }
+        h1 { text-align: center; }
+        input, textarea { width: 100%; margin: 5px 0; }
+        canvas { border: 1px solid #000; width: 100%; height: 200px; }
+        .section { border: 1px solid #ccc; padding: 10px; margin-top: 20px; }
+        img.preview { width: 100%; max-height: 300px; object-fit: contain; margin: 10px 0; }
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    </head>
+    
+<body>
+    <img id="logo" src="data:image/png;base64,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" alt="Logo Erhardt Professional" style="display:block; margin:auto; width:400px; margin-bottom:10px;">
+<h1>Ordem de Serviço - Erhardt Professional</h1>
+
+    <div>
+        <label>Cliente:</label><input type="text">
+        <label>Projeto/Obra:</label><input type="text">
+        <label>Data:</label><input type="text" id="data_completa" readonly>
+        <label>Número da OS:</label><input type="text" id="numero_os" readonly>
+        <label>Localização (capturada automaticamente):</label>
+        <input type="text" id="geolocation" readonly>
+        <div id="map" style="height: 300px; margin-top: 10px; border: 1px solid #ccc;"></div>
+    </div>
+
+    
+        
+        
+        <div class="section">
+            <h3>Equipe de Trabalho</h3>
+            <table width="100%" border="1" cellpadding="5">
+                <tr><th>#</th><th>Nome</th><th>Cargo</th></tr>
+<tr><td>1</td><td><input type="text" name="equipe_nome_1" placeholder="Nome"></td><td><select name="cargo_1"><option value=""></option><option value="Auxiliar Técnico">Auxiliar Técnico</option><option value="Técnico">Técnico</option><option value="Supervisor">Supervisor</option><option value="Coordenador">Coordenador</option><option value="Gerente">Gerente</option><option value="Diretor">Diretor</option></select></td></tr>
+<tr><td>2</td><td><input type="text" name="equipe_nome_2" placeholder="Nome"></td><td><select name="cargo_2"><option value=""></option><option value="Auxiliar Técnico">Auxiliar Técnico</option><option value="Técnico">Técnico</option><option value="Supervisor">Supervisor</option><option value="Coordenador">Coordenador</option><option value="Gerente">Gerente</option><option value="Diretor">Diretor</option></select></td></tr>
+<tr><td>3</td><td><input type="text" name="equipe_nome_3" placeholder="Nome"></td><td><select name="cargo_3"><option value=""></option><option value="Auxiliar Técnico">Auxiliar Técnico</option><option value="Técnico">Técnico</option><option value="Supervisor">Supervisor</option><option value="Coordenador">Coordenador</option><option value="Gerente">Gerente</option><option value="Diretor">Diretor</option></select></td></tr>
+<tr><td>4</td><td><input type="text" name="equipe_nome_4" placeholder="Nome"></td><td><select name="cargo_4"><option value=""></option><option value="Auxiliar Técnico">Auxiliar Técnico</option><option value="Técnico">Técnico</option><option value="Supervisor">Supervisor</option><option value="Coordenador">Coordenador</option><option value="Gerente">Gerente</option><option value="Diretor">Diretor</option></select></td></tr>
+<tr><td>5</td><td><input type="text" name="equipe_nome_5" placeholder="Nome"></td><td><select name="cargo_5"><option value=""></option><option value="Auxiliar Técnico">Auxiliar Técnico</option><option value="Técnico">Técnico</option><option value="Supervisor">Supervisor</option><option value="Coordenador">Coordenador</option><option value="Gerente">Gerente</option><option value="Diretor">Diretor</option></select></td></tr>
+            </table>
+        </div>
+
+
+
+
+    <div class="section">
+        <h3>Serviços Executados</h3>
+
+        <h4>Infraestrutura</h4>
+        <label>Percentual concluído (%):</label><input type="number" min="0" max="100">
+        <label>Descrição:</label><textarea rows="3"></textarea>
+        <button onclick="openCamera(this)">📷 Tirar Foto</button>
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="previewImage(this)">
+        <img class="preview" style="display:none;">
+
+
+        <h4>Cabeamento</h4>
+        <label>Percentual concluído (%):</label><input type="number" min="0" max="100">
+        <label>Descrição:</label><textarea rows="3"></textarea>
+        <button onclick="openCamera(this)">📷 Tirar Foto</button>
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="previewImage(this)">
+        <img class="preview" style="display:none;">
+
+
+        <h4>Fixação de Equipamentos</h4>
+        <label>Percentual concluído (%):</label><input type="number" min="0" max="100">
+        <label>Descrição:</label><textarea rows="3"></textarea>
+        <button onclick="openCamera(this)">📷 Tirar Foto</button>
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="previewImage(this)">
+        <img class="preview" style="display:none;">
+
+
+        <h4>Instalação de Equipamentos</h4>
+        <label>Percentual concluído (%):</label><input type="number" min="0" max="100">
+        <label>Descrição:</label><textarea rows="3"></textarea>
+        <button onclick="openCamera(this)">📷 Tirar Foto</button>
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="previewImage(this)">
+        <img class="preview" style="display:none;">
+
+
+        <h4>Conectorização</h4>
+        <label>Percentual concluído (%):</label><input type="number" min="0" max="100">
+        <label>Descrição:</label><textarea rows="3"></textarea>
+        <button onclick="openCamera(this)">📷 Tirar Foto</button>
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="previewImage(this)">
+        <img class="preview" style="display:none;">
+
+
+        <h4>Comissionamento</h4>
+        <label>Percentual concluído (%):</label><input type="number" min="0" max="100">
+        <label>Descrição:</label><textarea rows="3"></textarea>
+        <button onclick="openCamera(this)">📷 Tirar Foto</button>
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="previewImage(this)">
+        <img class="preview" style="display:none;">
+
+    </div>
+
+    <div class="section">
+        <h3>Assinaturas</h3>
+        <label>Assinatura do Responsável Técnico:</label>
+        <canvas id="signature1"></canvas>
+        <label>Assinatura do Cliente:</label>
+        <canvas id="signature2"></canvas>
+        <button onclick="clearCanvases()">Limpar Assinaturas</button>
+    </div>
+
+    <div style="text-align:center; margin-top:30px;">
+        <button onclick="window.print()">📄 Salvar como PDF / Imprimir</button>
+    </div>
+
+    <script>
+        function openCamera(button) {
+            const fileInput = button.nextElementSibling;
+            fileInput.click();
+        }
+
+        function previewImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            const img = input.nextElementSibling;
+            reader.onload = e => {
+                img.src = e.target.result;
+                img.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function enableSignature(id) {
+            const canvas = document.getElementById(id);
+            const ctx = canvas.getContext("2d");
+            let drawing = false;
+
+            canvas.addEventListener("mousedown", () => drawing = true);
+            canvas.addEventListener("mouseup", () => { drawing = false; ctx.beginPath(); });
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("touchstart", () => drawing = true);
+            canvas.addEventListener("touchend", () => { drawing = false; ctx.beginPath(); });
+            canvas.addEventListener("touchmove", e => {
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent("mousemove", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            });
+
+            function draw(e) {
+                if (!drawing) return;
+                ctx.lineWidth = 2;
+                ctx.lineCap = "round";
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            }
+        }
+
+        function clearCanvases() {
+            ["signature1", "signature2"].forEach(id => {
+                const canvas = document.getElementById(id);
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+        }
+
+        function getGeolocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const coords = position.coords.latitude.toFixed(5) + ", " + position.coords.longitude.toFixed(5);
+                    document.getElementById("geolocation").value = coords;
+var map = L.map("map").setView([position.coords.latitude, position.coords.longitude], 16);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+L.marker([position.coords.latitude, position.coords.longitude]).addTo(map)
+  .bindPopup("Localização atual").openPopup();
+preencherNumeroOS();
+                }, function(error) {
+                    document.getElementById("geolocation").value = "Localização não autorizada";
+                });
+            } else {
+                document.getElementById("geolocation").value = "Geolocalização não suportada";
+            }
+        }
+
+        enableSignature("signature1");
+        enableSignature("signature2");
+        
+        function preencherDataCompleta() {
+            const now = new Date();
+            const formatado = now.toLocaleString('pt-BR', {
+                day: '2-digit', month: '2-digit', year: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                fractionalSecondDigits: 3
+            }).replace(',', '');
+            document.getElementById("data_completa").value = formatado;
+        }
+
+
+        function preencherNumeroOS() {
+            const data = document.getElementById("data_completa").value.replaceAll('/', '').replaceAll(':', '').replaceAll('.', '').replaceAll(' ', '_');
+            const local = document.getElementById("geolocation").value.replaceAll(',', '').replaceAll(' ', '_');
+            const numero = `${data}_${local}`;
+            document.getElementById("numero_os").value = numero;
+        }
+
+window.onload = function() {
+    preencherNumeroOS();
+    preencherDataCompleta();
+    getGeolocation();
+};
+    </script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function() { console.log("Service Worker registrado com sucesso."); });
+  }
+</script>
+</body>
+
+</html>
